@@ -62,7 +62,7 @@ const checkout = () => {
                 disabled={!session}
                 className={`button m-2 ${
                   !session &&
-                  "from-gray-300 to-gray-500 border-gray-200 text-gray-300 cursor-not-allowed"
+                  "button cursor-not-allowed"
                 }`}
               >
                 {!session ? "Sign in to checkout" : "Process to checkout"}
