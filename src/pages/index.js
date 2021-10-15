@@ -7,7 +7,7 @@ export default function Home({ products }) {
   return (
     <div className="bg-gray-100">
       <Head>
-        <title>Ecommerce</title>
+        <title>Amazon Clone</title>
         <link rel="icon" href="https://merivis.org/wp-content/uploads/2018/02/Amazon-Logo-Transparent-PNG.png" />
       </Head>
 

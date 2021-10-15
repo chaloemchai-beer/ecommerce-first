@@ -5,11 +5,31 @@ import { useSelector } from "react-redux";
 import CheckoutProduct from "../components/CheckoutProduct";
 import { useSession } from "../../node_modules/next-auth/client";
 import Currency from "react-currency-formatter";
+import { loadStripe } from "@stripe/stripe-js";
+import axios from "axios";
+const stripePromise = loadStripe(process.env.stripe_public_key);
 
 const checkout = () => {
   const items = useSelector(selectItems);
   const total = useSelector(selectTotal);
   const [session] = useSession();
+
+  const createCheckSession = async () => {
+    const stripe = await stripePromise;
+
+    // Call the backend to create a checkout session...
+    const checkoutSession = await axios.post("/api/create-checkout-session", {
+      items: items,
+      email: session.user.email,
+    });
+
+    // Redirect user/customer to Stripe Checkout
+    const result = await stripe.redirectToCheckout({
+      sessionId: checkoutSession.data.id,
+    });
+
+    if (result.error) alert(result.error.message);
+  };
 
   return (
     <div className="bg-gray-100">
@@ -59,10 +79,11 @@ const checkout = () => {
               </h2>
 
               <button
+                role="link"
+                onClick={createCheckSession}
                 disabled={!session}
                 className={`button m-2 ${
-                  !session &&
-                  "button cursor-not-allowed"
+                  !session && "button cursor-not-allowed"
                 }`}
               >
                 {!session ? "Sign in to checkout" : "Process to checkout"}
